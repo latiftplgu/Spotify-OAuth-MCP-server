@@ -1,12 +1,9 @@
 {
   "name": "spotify-mcp-service",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "MCP service for Spotify API integration with Claude Desktop",
   "main": "src/mcp/server.ts",
   "type": "module",
-  "bin": {
-    "spotify-mcp": "src/mcp/server.ts"
-  },
   "scripts": {
     "build": "tsc",
     "start": "npm run build && node dist/mcp/server.js",
