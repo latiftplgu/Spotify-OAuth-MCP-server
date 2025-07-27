@@ -1,5 +1,5 @@
-import { commonSchemas, createSchema } from "../schemas/common.js";
-import { SpotifyService } from "../../spotify.js";
+import { commonSchemas, createSchema } from "../schemas/common";
+import { SpotifyService } from "../../spotify";
 
 export const artistTools = {
   get_artist: {

@@ -1,5 +1,5 @@
-import { commonSchemas, createSchema } from "../schemas/common.js";
-import { SpotifyService } from "../../spotify.js";
+import { commonSchemas, createSchema } from "../schemas/common";
+import { SpotifyService } from "../../spotify";
 import { z } from "zod";
 
 export const playlistTools = {

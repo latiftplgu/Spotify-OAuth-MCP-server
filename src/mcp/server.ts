@@ -1,76 +1,83 @@
 #!/usr/bin/env node
 
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { SpotifyService } from "../spotify.js";
-import { ToolRegistrar, toolCategories } from "./tools/index.js";
-import { z } from "zod";
+import {
+  CallToolRequestSchema,
+  ListToolsRequestSchema,
+} from "@modelcontextprotocol/sdk/types.js";
+import { SpotifyService } from "../spotify";
+import { ToolRegistrar } from "./tools/index";
+import { zodToJsonSchema } from "./helpers/utils";
+
 const spotifyService = new SpotifyService();
 const toolRegistrar = new ToolRegistrar(spotifyService);
-const server = new McpServer(
+
+const server = new Server(
   {
     name: "spotify-mcp-service",
-    version: "1.0.2",
+    version: "1.0.3",
   },
   {
     capabilities: {
-      tools: {
-        get_user_profile: {
-          title: "Get User Profile",
-          description: "Get the current user's profile information",
-          handler: async (args: any) => {
-            const user = await spotifyService.getUserProfile(args.token);
-            return user;
-          },
-          prompt: "Get the current user's profile information",
-          inputSchema: z.object({
-            token: z.string(),
-          }),
-        },
-      },
+      tools: {},
     },
   }
 );
 
-async function registerAllTools(): Promise<void> {
-  try {
-    const toolHandlers = toolRegistrar.getToolHandlers();
-    const toolNames = toolRegistrar.getToolNames();
+server.setRequestHandler(ListToolsRequestSchema, async () => {
+  const tools: any[] = [];
+  const toolNames = toolRegistrar.getToolNames();
 
-    for (const toolName of toolNames) {
-      const tool = toolRegistrar.getTool(toolName);
-      if (!tool) {
-        console.error(`Warning: Tool definition not found for '${toolName}'`);
-        continue;
-      }
-
-      const handler = toolHandlers[toolName];
-      if (!handler) {
-        console.error(`Warning: No handler found for tool '${toolName}'`);
-        continue;
-      }
-
-      await server.registerTool(
-        toolName,
-        {
-          title: tool.title,
-          description: tool.description,
-          inputSchema: tool.schema as any,
-        },
-        handler
-      );
-
-      console.error(`✓ Registered tool: ${toolName}`);
+  for (const toolName of toolNames) {
+    const tool = toolRegistrar.getTool(toolName);
+    if (tool) {
+      const jsonSchema = zodToJsonSchema(tool.schema);
+      tools.push({
+        name: toolName,
+        description: tool.description,
+        inputSchema: jsonSchema,
+      });
     }
-
-    console.error("\n📊 Tools organized by category:");
-    for (const [category, tools] of Object.entries(toolCategories)) {
-      console.error(`  ${category}: ${tools.length} tools`);
-    }
-  } catch (error) {
-    console.error("❌ Failed to register tools:", error);
   }
-}
+
+  return {
+    tools,
+  };
+});
+
+server.setRequestHandler(CallToolRequestSchema, async (request) => {
+  const { name, arguments: args } = request.params;
+
+  try {
+    const toolHandler = toolRegistrar.createToolHandler(name);
+    const result = await toolHandler(args || {});
+
+    return {
+      content: [
+        {
+          type: "text",
+          text:
+            typeof result === "string"
+              ? result
+              : JSON.stringify(result, null, 2),
+        },
+      ],
+    };
+  } catch (error) {
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Error executing tool '${name}': ${
+            error instanceof Error ? error.message : String(error)
+          }`,
+        },
+      ],
+      isError: true,
+    };
+  }
+});
 
 async function main(): Promise<void> {
   try {
@@ -78,10 +85,8 @@ async function main(): Promise<void> {
     console.error("🎵 Spotify MCP Server starting...");
     console.error("Working directory:", process.cwd());
 
-    await registerAllTools();
-
     const totalTools = toolRegistrar.getToolNames().length;
-    console.error(`📊 Total tools registered: ${totalTools}`);
+    console.error(`📊 Total tools available: ${totalTools}`);
 
     await server.connect(transport);
     console.error("🎵 Spotify MCP Server successfully started and connected.");
