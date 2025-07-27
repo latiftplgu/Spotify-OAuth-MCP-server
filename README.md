@@ -1,136 +1,125 @@
-# Spotify MCP Service (TypeScript)
+# Spotify MCP Server - Refactored Architecture
 
-Bu proje, Spotify API'si ile entegre olmuş bir MCP (Model Context Protocol) servisidir ve TypeScript ile yazılmıştır.
+This directory contains the refactored Spotify MCP (Model Context Protocol) server with a clean, modular architecture.
 
-## Özellikler
+## 📁 Project Structure
 
-- **Tam TypeScript Desteği**: Güçlü tip güvenliği ve geliştirici deneyimi
-- **Spotify Web API Entegrasyonu**: Kapsamlı müzik işlevselliği
-- **MCP Protokolü**: Claude Desktop ile uyumlu
-- **Çeşitli Müzik İşlemleri**: Arama, çalma, playlist yönetimi ve daha fazlası
-
-## Kurulum
-
-### Gereksinimler
-
-- Node.js (v18 veya üzeri)
-- npm veya yarn
-- Spotify Developer hesabı ve API anahtarları
-
-### Bağımlılıkları Yükleme
-
-```bash
-npm install
+```
+src/mcp/
+├── server.ts              # Main MCP server entry point
+├── schemas/
+│   └── common.ts          # Reusable schema builders and common parameters
+└── tools/
+    ├── index.ts           # Tool registry and automated registration system
+    ├── albums.ts          # Album-related tools
+    ├── artists.ts         # Artist-related tools
+    ├── tracks.ts          # Track-related tools
+    ├── playlists.ts       # Playlist-related tools
+    ├── playback.ts        # Playback control tools
+    ├── user.ts            # User profile tools
+    └── search.ts          # General search tools
 ```
 
-### TypeScript Projesini Build Etme
+## 🔄 Refactoring Improvements
 
-```bash
-npm run build
+### Before vs After
+
+**Before:**
+
+- ❌ Single 1000+ line file with repetitive definitions
+- ❌ Manual tool registration with hard-coded mappings
+- ❌ JSON Schema → Zod conversion complexity
+- ❌ Difficult to maintain and extend
+
+**After:**
+
+- ✅ **Modular Architecture**: Tools organized by feature categories
+- ✅ **Reusable Components**: Common schema builders eliminate duplication
+- ✅ **Type Safety**: Full TypeScript support with Zod schemas
+- ✅ **Automated Registration**: Dynamic tool discovery and registration
+- ✅ **Better Organization**: 47 tools across 7 logical categories
+
+## 🛠️ Key Features
+
+### 1. Common Schema Builders (`schemas/common.ts`)
+
+Reusable parameter builders that eliminate code duplication:
+
+```typescript
+// Instead of repeating token definitions
+commonSchemas.token(); // Spotify access token
+commonSchemas.limit(1, 50, 20); // Pagination with min/max/default
+commonSchemas.spotifyId("track"); // Track/album/artist ID with context
+commonSchemas.deviceId(); // Optional device ID
 ```
 
-### Çalıştırma
+### 2. Feature-Based Tool Modules
 
-```bash
-# Production build'i çalıştır
-npm start
+Each module contains related tools with consistent structure:
 
-# Geliştirme modu (otomatik yeniden başlatma)
-npm run dev
+```typescript
+export const albumTools = {
+  get_album: {
+    title: "Get Album",
+    description: "Retrieve detailed information about a specific album",
+    schema: createSchema({
+      token: commonSchemas.token(),
+      albumId: commonSchemas.spotifyId("album"),
+    }),
+    handler: async (args, spotifyService) => {
+      const { token, albumId } = args;
+      return await spotifyService.getAlbum(token, albumId);
+    },
+  },
+  // ... more tools
+};
 ```
 
-## TypeScript Yapısı
+### 3. Automated Tool Registration (`tools/index.ts`)
 
-Proje şu TypeScript dosyalarını içerir:
+The `ToolRegistrar` class provides:
 
-- `src/spotify.ts` - Ana Spotify API service sınıfı ve tip tanımlamaları
-- `src/mcp/server.ts` - MCP server implementasyonu ve handler'lar
-- `src/mcp/tools-definitions.ts` - Tool tanımlamaları ve şemaları
-- `tsconfig.json` - TypeScript konfigürasyonu
+- **Automatic discovery** of all tools across modules
+- **Zod validation** of tool arguments
+- **Error handling** with descriptive messages
+- **MCP compatibility** layer
 
-## Tip Güvenliği
-
-Proje, Spotify API response'ları için kapsamlı tip tanımlamaları içerir:
-
-- `SpotifyTrack` - Şarkı bilgileri
-- `SpotifyArtist` - Sanatçı bilgileri
-- `SpotifyAlbum` - Albüm bilgileri
-- `SpotifyPlaylist` - Playlist bilgileri
-- `AudioFeatures` - Ses özellik analizi
-- Ve daha fazlası...
-
-## Geliştirme
-
-### Kodun Type Check Edilmesi
-
-```bash
-npx tsc --noEmit
+```typescript
+const toolRegistrar = new ToolRegistrar(spotifyService);
+const handlers = toolRegistrar.getToolHandlers(); // Auto-generated handlers
+const definitions = toolRegistrar.getMcpToolDefinitions(); // MCP format
 ```
 
-### Watch Modu ile Geliştirme
+## 📊 Tool Categories
+
+| Category  | Count | Description                                |
+| --------- | ----- | ------------------------------------------ |
+| Albums    | 4     | Album information and new releases         |
+| Artists   | 7     | Artist data, albums, and relationships     |
+| Tracks    | 9     | Track details, audio features, and library |
+| Playlists | 10    | Playlist management and discovery          |
+| Playback  | 11    | Player controls and device management      |
+| User      | 1     | User profile information                   |
+| Search    | 2     | General search and search-to-play          |
+
+**Total: 44 tools** organized across 7 logical categories
+
+## 🚀 Benefits
+
+1. **Maintainability**: Easy to add/modify tools in specific categories
+2. **Reusability**: Common schemas prevent duplication
+3. **Type Safety**: Full TypeScript and Zod validation
+4. **Performance**: More efficient registration and validation
+5. **Developer Experience**: Clear organization and better error messages
+6. **Extensibility**: Simple pattern for adding new tool categories
+
+## 📝 Usage
+
+The refactored server maintains full backward compatibility while providing a much cleaner internal structure. All 44 Spotify tools are automatically registered and available for use by MCP clients.
 
 ```bash
-npm run dev
-```
-
-## Kullanılan Araçlar
-
-- **TypeScript 5.3+** - Tip güvenliği
-- **tsx** - TypeScript runtime
-- **Zod** - Runtime tip validasyonu
-- **Axios** - HTTP client (tipli)
-- **@modelcontextprotocol/sdk** - MCP framework
-
-## API Referansı
-
-### Desteklenen Tool'lar
-
-Servis 40+ müzik tool'u destekler:
-
-#### Kullanıcı İşlemleri
-
-- `get_user_profile` - Kullanıcı profil bilgileri
-- `get_top_tracks` - En çok dinlenen şarkılar
-- `get_top_artists` - En çok dinlenen sanatçılar
-
-#### Müzik Arama
-
-- `search_tracks` - Şarkı arama
-- `search_artists` - Sanatçı arama
-- `search_albums` - Albüm arama
-- `search_playlists` - Playlist arama
-
-#### Playback Kontrolü
-
-- `start_playback` - Müzik çalmayı başlat
-- `pause_player` - Duraklat
-- `skip_to_next` - Sonraki şarkı
-- `skip_to_previous` - Önceki şarkı
-- `set_volume` - Ses seviyesi
-
-#### Playlist Yönetimi
-
-- `create_playlist` - Yeni playlist oluştur
-- `add_to_playlist` - Playlist'e şarkı ekle
-- `remove_from_playlist` - Playlist'ten şarkı çıkar
-- `get_playlist_tracks` - Playlist şarkıları
-
-Ve daha fazlası...
-
-## Hata Ayıklama
-
-TypeScript derleyici hataları:
-
-```bash
-npm run build
-```
-
-Runtime hataları için log'ları kontrol edin:
-
-```bash
+# Start the server (same as before)
 npm start
 ```
 
-## Lisans
-
-MIT
+The server will automatically discover and register all tools from the modular structure, providing better logging with category breakdowns and improved error handling.
