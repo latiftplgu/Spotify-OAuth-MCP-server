@@ -20,25 +20,6 @@ src/mcp/
     └── search.ts          # General search tools
 ```
 
-## 🔄 Refactoring Improvements
-
-### Before vs After
-
-**Before:**
-
-- ❌ Single 1000+ line file with repetitive definitions
-- ❌ Manual tool registration with hard-coded mappings
-- ❌ JSON Schema → Zod conversion complexity
-- ❌ Difficult to maintain and extend
-
-**After:**
-
-- ✅ **Modular Architecture**: Tools organized by feature categories
-- ✅ **Reusable Components**: Common schema builders eliminate duplication
-- ✅ **Type Safety**: Full TypeScript support with Zod schemas
-- ✅ **Automated Registration**: Dynamic tool discovery and registration
-- ✅ **Better Organization**: 47 tools across 7 logical categories
-
 ## 🛠️ Key Features
 
 ### 1. Common Schema Builders (`schemas/common.ts`)

@@ -3,9 +3,8 @@
   "version": "1.0.3",
   "description": "MCP service for Spotify API integration with Claude Desktop",
   "main": "src/mcp/server.ts",
-  "type": "module",
   "scripts": {
-    "build": "tsc",
+    "build": "npx tsc",
     "start": "npm run build && node dist/mcp/server.js",
     "dev": "tsx src/mcp/server.ts"
   },
