@@ -5,7 +5,7 @@
   "main": "src/mcp/server.ts",
   "scripts": {
     "build": "npx tsc",
-    "start": "node dist/mcp/server.js",
+    "start": "node src/mcp/server.js",
     "dev": "tsx src/mcp/server.ts"
   },
   "keywords": [
