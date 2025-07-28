@@ -654,14 +654,11 @@ export class SpotifyService {
     trackUri: string,
     deviceId: string | null = null
   ): Promise<void> {
-    const params: Record<string, any> = { uri: trackUri };
-    if (deviceId) params.device_id = deviceId;
-    return await this.makeRequest<void>(
-      "me/player/queue",
-      token,
-      params,
-      "POST"
-    );
+    let endpoint = `me/player/queue?uri=${encodeURIComponent(trackUri)}`;
+    if (deviceId) {
+      endpoint += `&device_id=${deviceId}`;
+    }
+    return await this.makeRequest<void>(endpoint, token, {}, "POST");
   }
 
   async playMusic(
