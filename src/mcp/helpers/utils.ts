@@ -18,7 +18,8 @@ function zodToJsonSchema(zodSchema: any): any {
       if (fieldSchema._def) {
         properties[key] = convertZodFieldToJsonSchema(fieldSchema);
 
-        if (!fieldSchema.isOptional()) {
+        // A field is required if it's not optional and doesn't have a default value
+        if (!isOptionalOrHasDefault(fieldSchema)) {
           required.push(key);
         }
       }
@@ -37,6 +38,46 @@ function zodToJsonSchema(zodSchema: any): any {
       required: [],
     };
   }
+}
+
+function isOptionalOrHasDefault(field: any): boolean {
+  // Traverse the type chain to find optional or default modifiers
+  let currentField = field;
+  const visited = new Set(); // Prevent infinite loops
+
+  while (currentField && currentField._def && !visited.has(currentField)) {
+    visited.add(currentField);
+
+    const typeName = currentField._def.typeName;
+
+    // Check for optional wrapper
+    if (typeName === "ZodOptional") {
+      return true;
+    }
+
+    // Check for default wrapper
+    if (typeName === "ZodDefault") {
+      return true;
+    }
+
+    // Move to inner type if available
+    if (currentField._def.innerType) {
+      currentField = currentField._def.innerType;
+    } else {
+      break;
+    }
+  }
+
+  // Additional check: if the field has the optional flag
+  if (
+    field._def &&
+    field._def.hasOwnProperty("optional") &&
+    field._def.optional
+  ) {
+    return true;
+  }
+
+  return false;
 }
 
 function convertZodFieldToJsonSchema(field: any): any {
