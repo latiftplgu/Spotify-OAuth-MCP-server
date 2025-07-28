@@ -331,12 +331,12 @@ export const playbackTools = {
 • Device must be currently available and responsive`,
     schema: createSchema({
       token: commonSchemas.token(),
-      volumePercent: commonSchemas.volumePercent(),
+      volume_percent: commonSchemas.volumePercent(),
       deviceId: commonSchemas.deviceId(),
     }),
     handler: async (args: any, spotifyService: SpotifyService) => {
-      const { token, volumePercent, deviceId } = args;
-      return await spotifyService.setVolume(token, volumePercent, deviceId);
+      const { token, volume_percent, deviceId } = args;
+      return await spotifyService.setVolume(token, volume_percent, deviceId);
     },
   },
 

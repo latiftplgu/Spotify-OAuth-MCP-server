@@ -733,13 +733,12 @@ export class SpotifyService {
     volumePercent: number,
     deviceId: string | null = null
   ): Promise<void> {
-    const params = {
-      volume_percent: Math.min(Math.max(volumePercent, 0), 100),
-    };
-    const endpoint = deviceId
-      ? `me/player/volume?device_id=${deviceId}`
-      : "me/player/volume";
-    return await this.makeRequest<void>(endpoint, token, params, "PUT");
+    const volume = Math.min(Math.max(volumePercent, 0), 100);
+    let endpoint = `me/player/volume?volume_percent=${volume}`;
+    if (deviceId) {
+      endpoint += `&device_id=${deviceId}`;
+    }
+    return await this.makeRequest<void>(endpoint, token, {}, "PUT");
   }
 
   async getUserDevices(token: string): Promise<{ devices: SpotifyDevice[] }> {
