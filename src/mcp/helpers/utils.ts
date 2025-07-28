@@ -1,6 +1,11 @@
 function zodToJsonSchema(zodSchema: any): any {
   try {
-    const shape = zodSchema._def?.shape;
+    // In newer versions of Zod, shape is a function that needs to be called
+    const shape =
+      typeof zodSchema._def?.shape === "function"
+        ? zodSchema._def.shape()
+        : zodSchema._def?.shape;
+
     if (!shape) {
       return {
         type: "object",
