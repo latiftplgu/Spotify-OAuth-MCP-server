@@ -757,20 +757,6 @@ export class SpotifyService {
     return await this.makeRequest<void>("me/player", token, {}, "PUT", data);
   }
 
-  async getFeaturedPlaylists(
-    token: string,
-    limit: number = 20,
-    country: string | null = null
-  ): Promise<{ playlists: PagingObject<SpotifyPlaylist> }> {
-    const params: Record<string, any> = { limit: Math.min(limit, 50) };
-    if (country) params.country = country;
-    return await this.makeRequest<{ playlists: PagingObject<SpotifyPlaylist> }>(
-      "browse/featured-playlists",
-      token,
-      params
-    );
-  }
-
   async getCategories(
     token: string,
     limit: number = 20,
@@ -781,19 +767,6 @@ export class SpotifyService {
     return await this.makeRequest<{
       categories: PagingObject<SpotifyCategory>;
     }>("browse/categories", token, params);
-  }
-
-  async getCategoryPlaylists(
-    token: string,
-    categoryId: string,
-    limit: number = 20
-  ): Promise<{ playlists: PagingObject<SpotifyPlaylist> }> {
-    const params = { limit: Math.min(limit, 50) };
-    return await this.makeRequest<{ playlists: PagingObject<SpotifyPlaylist> }>(
-      `browse/categories/${categoryId}/playlists`,
-      token,
-      params
-    );
   }
   async savePlaylist(token: string, playlistId: string): Promise<void> {
     const id = this.extractId(playlistId);

@@ -378,65 +378,6 @@ export const playlistTools = {
     },
   },
 
-  get_featured_playlists: {
-    title: "Get Featured Playlists",
-    description: `Discover Spotify's editorial featured playlists that are promoted for music discovery and trending content.
-
-🎯 USE CASES:
-• Stay current with Spotify's featured music content
-• Discover trending playlists and popular music
-• Find professionally curated collections for different genres
-• Access seasonal and timely music recommendations
-• Explore regional music trends and featured content
-
-📝 WHAT IT RETURNS:
-• Current Spotify featured playlists with editorial selection
-• Playlist names, descriptions, and professional artwork
-• Follower counts and engagement metrics
-• Genre classifications and target demographics
-• Links to explore featured content and new music
-
-🔍 EXAMPLES:
-• "Show me today's featured playlists"
-• "Get featured playlists for the US market"
-• "Find Spotify's current promoted playlists"
-• "What playlists is Spotify featuring this week?"
-
-🎵 FEATURED CONTENT:
-• Editorially curated by Spotify's music experts
-• Updated regularly with fresh content and trends
-• Includes genre-specific and mood-based collections
-• Features new releases and discovery opportunities
-• Reflects current music culture and listening patterns
-
-🌍 REGIONAL FEATURES:
-• Country-specific featured content
-• Reflects local music preferences and culture
-• Includes regional artists and trending content
-• Adapts to market-specific listening habits
-• Great for discovering international music
-
-💡 DISCOVERY VALUE:
-• Professional curation ensures quality content
-• Perfect for finding new music and artists
-• Stays current with music trends and culture
-• Excellent source for playlist inspiration
-• Access to Spotify's recommendation expertise
-
-⚠️ REQUIREMENTS:
-• Valid Spotify access token
-• Optional country parameter for regional content`,
-    schema: createSchema({
-      token: commonSchemas.token(),
-      limit: commonSchemas.limit(1, 50, 20),
-      country: commonSchemas.country(),
-    }),
-    handler: async (args: any, spotifyService: SpotifyService) => {
-      const { token, limit = 20, country } = args;
-      return await spotifyService.getFeaturedPlaylists(token, limit, country);
-    },
-  },
-
   get_categories: {
     title: "Get Browse Categories",
     description: `Explore all available music categories that Spotify uses to organize and classify playlists and content.
@@ -495,105 +436,48 @@ export const playlistTools = {
     },
   },
 
-  get_category_playlists: {
-    title: "Get Category Playlists",
-    description: `Retrieve playlists from a specific music category to explore genre-focused and themed content collections.
-
-🎯 USE CASES:
-• Explore playlists within specific music genres or moods
-• Build category-specific music recommendation systems
-• Discover curated content for particular musical styles
-• Create genre-focused music discovery experiences
-• Research playlist organization within musical categories
-
-📝 WHAT IT RETURNS:
-• Playlists specifically curated for the chosen category
-• Playlist names, descriptions, and creator information
-• Follower counts and engagement metrics
-• Category-specific artwork and branding
-• Links to explore and follow category playlists
-
-🔍 EXAMPLES:
-• "Get playlists from the 'Electronic' category"
-• "Show me all playlists in the 'Workout' category"
-• "Find playlists in category ID: toplists"
-• "What playlists are in the 'Chill' category?"
-
-🎵 CATEGORY EXPLORATION:
-• Focused discovery within specific musical styles
-• Professionally curated genre-specific content
-• Reflects category themes and musical characteristics
-• Perfect for deep genre exploration
-• Access to specialized and niche content
-
-💡 DISCOVERY PATTERNS:
-• Start with broad categories, then narrow down
-• Compare playlists within same category
-• Use for genre education and exploration
-• Perfect for finding new sub-genres and styles
-• Great for building themed music collections
-
-🎯 TARGETED CONTENT:
-• Each category offers unique musical perspectives
-• Playlists reflect category-specific curation
-• Professional editorial selection within genres
-• Access to both mainstream and niche content
-
-⚠️ REQUIREMENTS:
-• Valid Spotify access token
-• Valid category ID (use get_categories to find IDs)`,
-    schema: createSchema({
-      token: commonSchemas.token(),
-      categoryId: z.string().describe("Spotify category ID"),
-      limit: commonSchemas.limit(1, 50, 20),
-    }),
-    handler: async (args: any, spotifyService: SpotifyService) => {
-      const { token, categoryId, limit = 20 } = args;
-      return await spotifyService.getCategoryPlaylists(
-        token,
-        categoryId,
-        limit
-      );
-    },
-  },
-
   save_playlist: {
     title: "Save Playlist",
-    description: `Save a playlist to the user's Spotify library.
+    description: `Save a user-created playlist to your Spotify library (follow playlist).
 
 🎯 USE CASES:
-• Add playlists to user's library for offline access
-• Create a backup of favorite playlists
-• Organize playlists into collections for easy access
-• Share playlists with friends and family
+• Add user-created playlists to your library for offline access
+• Follow collaborative playlists from friends
+• Organize personal playlists into collections
+• Follow community-created playlists
 
 📝 WHAT IT RETURNS:
-• Confirmation of successful playlist save
-• Updated user's saved playlist count
+• Confirmation of successful playlist save/follow
+• Updated library status
 • Playlist URL for easy sharing and access
 • Error details for any failed saves
 
 🔍 EXAMPLES:
-• "Save my favorite workout playlist to my library"
-• "Add this playlist to my saved collections"
-• "Save this collaborative playlist for later"
+• "Save this collaborative playlist my friend created"
+• "Follow this user-generated workout playlist"
+• "Add this personal playlist to my library"
 
 💡 SAVE FEATURES:
-• Save single playlists or multiple playlists at once
+• Works with user-created playlists
 • Maintains playlist order and structure
-• Perfect for offline access and backup
-• Supports bulk saves for efficiency
+• Perfect for following collaborative playlists
+• Enables offline access to followed playlists
 
-💡 MANAGEMENT TIPS:
-• Regular review helps maintain organized library
-• Check for duplicate or outdated playlists
-• Identify collaborative playlists for group management
-• Monitor follower growth on public playlists
+🚫 LIMITATIONS (as of November 27, 2024):
+• Cannot save Spotify's official/editorial playlists
+• Cannot follow algorithmic playlists (Discover Weekly, etc.)
+• Only works with playlists created by users
+• Spotify-owned playlists are restricted
+
+🔧 TROUBLESHOOTING:
+• If you get 404 error: The playlist might be Spotify-owned
+• Try with user-created playlists instead
+• Check if playlist is public and accessible
 
 ⚠️ REQUIREMENTS:
-• Valid Spotify access token
-• Playlist must be accessible to the user
-• Respect rate limits for large saves`,
+• Valid Spotify access token with playlist-modify-public scope
+• Playlist must be user-created (not Spotify-owned)
+• Playlist must be public or accessible to your account`,
     schema: createSchema({
       token: commonSchemas.token(),
       playlistId: commonSchemas.spotifyId("playlist"),
@@ -606,41 +490,52 @@ export const playlistTools = {
 
   unsave_playlist: {
     title: "Remove Playlist from Library",
-    description: `Remove a saved playlist from the user's Spotify library.
+    description: `Remove a user-created playlist from your Spotify library (unfollow playlist).
 
 🎯 USE CASES:
-• Clean up library by removing outdated playlists
-• Unfollow playlists that no longer match preferences
-• Remove duplicate or similar playlists
-• Organize library by removing temporary saves
+• Clean up library by unfollowing user-created playlists
+• Unfollow collaborative playlists that no longer match preferences
+• Remove personal playlist follows
+• Organize library by removing temporary follows
 
 📝 WHAT IT RETURNS:
-• Confirmation of successful playlist removal
-• Updated user's saved playlist count
+• Confirmation of successful playlist unfollow
+• Updated library status
 • Status of the removal operation
 • Error details for any failed removals
 
 🔍 EXAMPLES:
-• "Remove this playlist from my library"
-• "Unfollow the workout playlist I saved last month"
-• "Delete this playlist from my saved collections"
+• "Unfollow this user-created playlist"
+• "Remove this collaborative playlist from my library"
+• "Stop following this personal playlist"
 
 💡 REMOVAL FEATURES:
-• Instantly removes playlist from your library
+• Instantly unfollows playlist from your library
 • Doesn't delete the original playlist
-• You can re-save the playlist anytime
+• You can re-follow the playlist anytime
 • Perfect for library maintenance
+
+🚫 LIMITATIONS (as of November 27, 2024):
+• Cannot unfollow Spotify's official/editorial playlists
+• Cannot affect algorithmic playlists (they auto-appear)
+• Only works with user-created playlists you follow
+• Spotify-owned playlists are restricted
+
+🔧 TROUBLESHOOTING:
+• If you get 404 error: The playlist might be Spotify-owned
+• Ensure you're currently following the playlist
+• Only works with user-created playlists
 
 💡 MANAGEMENT TIPS:
 • Regular cleanup helps keep library organized
-• Remove playlists you no longer listen to
+• Unfollow playlists you no longer listen to
 • Consider creating your own versions of favorites
-• Use this for temporary playlist follows
+• Use this for managing collaborative playlist follows
 
 ⚠️ REQUIREMENTS:
-• Valid Spotify access token
-• Playlist must be currently saved in your library
-• You must have permission to unfollow the playlist`,
+• Valid Spotify access token with playlist-modify-public scope
+• Playlist must be user-created (not Spotify-owned)
+• You must currently be following the playlist`,
     schema: createSchema({
       token: commonSchemas.token(),
       playlistId: commonSchemas.spotifyId("playlist"),
