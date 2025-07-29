@@ -47,59 +47,6 @@ export const trackTools = {
     },
   },
 
-  get_audio_features: {
-    title: "Get Track Audio Features",
-    description: `Access Spotify's advanced audio analysis providing musical characteristics and technical details about any track.
-
-🎯 USE CASES:
-• Build music recommendation systems based on audio similarity
-• Create mood-based playlist generators using musical features
-• Analyze musical patterns and characteristics for research
-• Filter and sort music by energy, danceability, or mood
-• Build DJ tools with BPM and key information
-
-📝 WHAT IT RETURNS:
-• Musical features: danceability, energy, valence, acousticness
-• Technical specs: tempo (BPM), key, mode, time signature
-• Audio characteristics: loudness, speechiness, instrumentalness
-• Confidence scores for each detected feature
-• Liveness indicator (live performance vs. studio recording)
-
-🔍 EXAMPLES:
-• "Get audio features for 'Uptown Funk' to find similar dance tracks"
-• "Analyze the BPM and key for DJ mixing purposes"
-• "Find the energy and mood characteristics of this song"
-• "Get technical audio data for track ID: 32OlwWuMpZ6b0aN2RZOeMS"
-
-🎵 MUSICAL FEATURES EXPLAINED:
-• Danceability (0-1): How suitable for dancing
-• Energy (0-1): Intensity and powerful feeling
-• Valence (0-1): Musical positivity/happiness
-• Acousticness (0-1): Acoustic vs. electronic sound
-• Instrumentalness (0-1): Vocal vs. instrumental content
-• Liveness (0-1): Live performance characteristics
-• Speechiness (0-1): Speech-like vocal content
-
-💡 ADVANCED APPLICATIONS:
-• Smart playlist creation based on mood
-• Music recommendation algorithms
-• DJ set preparation and track matching
-• Audio-based music discovery systems
-• Musical analysis and research projects
-
-⚠️ REQUIREMENTS:
-• Valid Spotify access token
-• Audio features available for most tracks (some may be missing)`,
-    schema: createSchema({
-      token: commonSchemas.token(),
-      trackId: commonSchemas.spotifyId("track"),
-    }),
-    handler: async (args: any, spotifyService: SpotifyService) => {
-      const { token, trackId } = args;
-      return await spotifyService.getAudioFeatures(token, trackId);
-    },
-  },
-
   search_tracks: {
     title: "Search Tracks",
     description: `Search specifically for individual tracks with targeted filtering for precise song discovery.

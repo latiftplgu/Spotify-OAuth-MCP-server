@@ -474,14 +474,6 @@ export class SpotifyService {
     return await this.makeRequest<SpotifyTrack>(`tracks/${id}`, token);
   }
 
-  async getAudioFeatures(
-    token: string,
-    trackId: string
-  ): Promise<AudioFeatures> {
-    const id = this.extractId(trackId);
-    return await this.makeRequest<AudioFeatures>(`audio-features/${id}`, token);
-  }
-
   async searchTracks(
     token: string,
     query: string,
