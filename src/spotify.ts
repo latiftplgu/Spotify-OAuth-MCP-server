@@ -398,17 +398,6 @@ export class SpotifyService {
     );
   }
 
-  async getRelatedArtists(
-    token: string,
-    artistId: string
-  ): Promise<{ artists: SpotifyArtist[] }> {
-    const id = this.extractId(artistId);
-    return await this.makeRequest<{ artists: SpotifyArtist[] }>(
-      `artists/${id}/related-artists`,
-      token
-    );
-  }
-
   async getArtistTopTracks(
     token: string,
     artistId: string,
@@ -499,21 +488,6 @@ export class SpotifyService {
       limit: Math.min(limit, 50),
     };
     return await this.makeRequest<SearchResult>("search", token, params);
-  }
-
-  async getRecommendations(
-    token: string,
-    options: RecommendationOptions = {}
-  ): Promise<{ tracks: SpotifyTrack[]; seeds: any[] }> {
-    const params = {
-      limit: Math.min(options.limit || 20, 100),
-      ...options,
-    };
-    return await this.makeRequest<{ tracks: SpotifyTrack[]; seeds: any[] }>(
-      "recommendations",
-      token,
-      params
-    );
   }
 
   async getUserPlaylists(

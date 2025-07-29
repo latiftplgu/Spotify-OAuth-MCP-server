@@ -94,49 +94,6 @@ export const artistTools = {
     },
   },
 
-  get_related_artists: {
-    title: "Get Related Artists",
-    description: `Discover artists similar to your favorites based on Spotify's sophisticated recommendation algorithms.
-
-🎯 USE CASES:
-• Music discovery through artist similarities
-• Building genre-cohesive playlists with multiple artists
-• Finding new artists if you like a specific musician
-• Exploring musical genres and subgenres systematically
-• Creating festival or concert lineups with complementary artists
-
-📝 WHAT IT RETURNS:
-• Up to 20 related artists with similarity scores
-• Artist names, images, and genre information
-• Popularity metrics and follower counts
-• Links to explore each related artist further
-• Spotify's confidence in each recommendation
-
-🔍 EXAMPLES:
-• "Find artists similar to Radiohead"
-• "Who are artists related to Taylor Swift?"
-• "Show me musicians like Kendrick Lamar"
-• "I love Billie Eilish, find similar artists"
-
-💡 HOW IT WORKS:
-• Based on user listening patterns and musical similarity
-• Considers genre, style, and collaborative history
-• Uses advanced machine learning algorithms
-• Updates regularly based on streaming data
-
-⚠️ REQUIREMENTS:
-• Valid Spotify access token
-• Artist must have sufficient data for recommendations`,
-    schema: createSchema({
-      token: commonSchemas.token(),
-      artistId: commonSchemas.spotifyId("artist"),
-    }),
-    handler: async (args: any, spotifyService: SpotifyService) => {
-      const { token, artistId } = args;
-      return await spotifyService.getRelatedArtists(token, artistId);
-    },
-  },
-
   get_artist_top_tracks: {
     title: "Get Artist Top Tracks",
     description: `Discover an artist's most popular and widely-played tracks based on global streaming data.
