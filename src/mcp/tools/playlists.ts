@@ -556,4 +556,98 @@ export const playlistTools = {
       );
     },
   },
+
+  save_playlist: {
+    title: "Save Playlist",
+    description: `Save a playlist to the user's Spotify library.
+
+🎯 USE CASES:
+• Add playlists to user's library for offline access
+• Create a backup of favorite playlists
+• Organize playlists into collections for easy access
+• Share playlists with friends and family
+
+📝 WHAT IT RETURNS:
+• Confirmation of successful playlist save
+• Updated user's saved playlist count
+• Playlist URL for easy sharing and access
+• Error details for any failed saves
+
+🔍 EXAMPLES:
+• "Save my favorite workout playlist to my library"
+• "Add this playlist to my saved collections"
+• "Save this collaborative playlist for later"
+
+💡 SAVE FEATURES:
+• Save single playlists or multiple playlists at once
+• Maintains playlist order and structure
+• Perfect for offline access and backup
+• Supports bulk saves for efficiency
+
+💡 MANAGEMENT TIPS:
+• Regular review helps maintain organized library
+• Check for duplicate or outdated playlists
+• Identify collaborative playlists for group management
+• Monitor follower growth on public playlists
+
+⚠️ REQUIREMENTS:
+• Valid Spotify access token
+• Playlist must be accessible to the user
+• Respect rate limits for large saves`,
+    schema: createSchema({
+      token: commonSchemas.token(),
+      playlistId: commonSchemas.spotifyId("playlist"),
+    }),
+    handler: async (args: any, spotifyService: SpotifyService) => {
+      const { token, playlistId } = args;
+      return await spotifyService.savePlaylist(token, playlistId);
+    },
+  },
+
+  unsave_playlist: {
+    title: "Remove Playlist from Library",
+    description: `Remove a saved playlist from the user's Spotify library.
+
+🎯 USE CASES:
+• Clean up library by removing outdated playlists
+• Unfollow playlists that no longer match preferences
+• Remove duplicate or similar playlists
+• Organize library by removing temporary saves
+
+📝 WHAT IT RETURNS:
+• Confirmation of successful playlist removal
+• Updated user's saved playlist count
+• Status of the removal operation
+• Error details for any failed removals
+
+🔍 EXAMPLES:
+• "Remove this playlist from my library"
+• "Unfollow the workout playlist I saved last month"
+• "Delete this playlist from my saved collections"
+
+💡 REMOVAL FEATURES:
+• Instantly removes playlist from your library
+• Doesn't delete the original playlist
+• You can re-save the playlist anytime
+• Perfect for library maintenance
+
+💡 MANAGEMENT TIPS:
+• Regular cleanup helps keep library organized
+• Remove playlists you no longer listen to
+• Consider creating your own versions of favorites
+• Use this for temporary playlist follows
+
+⚠️ REQUIREMENTS:
+• Valid Spotify access token
+• Playlist must be currently saved in your library
+• You must have permission to unfollow the playlist`,
+    schema: createSchema({
+      token: commonSchemas.token(),
+      playlistId: commonSchemas.spotifyId("playlist"),
+    }),
+    handler: async (args: any, spotifyService: SpotifyService) => {
+      const { token, playlistId } = args;
+      return await spotifyService.unsavePlaylist(token, playlistId);
+    },
+  },
 };

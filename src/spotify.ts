@@ -795,4 +795,23 @@ export class SpotifyService {
       params
     );
   }
+  async savePlaylist(token: string, playlistId: string): Promise<void> {
+    const id = this.extractId(playlistId);
+    return await this.makeRequest<void>(
+      `playlists/${id}/followers`,
+      token,
+      {},
+      "PUT"
+    );
+  }
+
+  async unsavePlaylist(token: string, playlistId: string): Promise<void> {
+    const id = this.extractId(playlistId);
+    return await this.makeRequest<void>(
+      `playlists/${id}/followers`,
+      token,
+      {},
+      "DELETE"
+    );
+  }
 }
