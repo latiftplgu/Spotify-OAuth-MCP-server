@@ -1,4 +1,5 @@
 # Spotify MCP Server
+[![smithery badge](https://smithery.ai/badge/@latiftplgu/spotify-oauth-mcp-server)](https://smithery.ai/server/@latiftplgu/spotify-oauth-mcp-server)
 
 A comprehensive **Model Context Protocol (MCP)** server that provides seamless integration between AI assistants (like Claude Desktop) and the Spotify Web API. This server enables AI assistants to interact with Spotify's music streaming service through a well-structured, type-safe interface.
 
