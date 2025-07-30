@@ -12,14 +12,15 @@ This MCP server acts as a bridge between AI assistants and Spotify's Web API, al
 - Access user profiles and music libraries
 - Manage user's music library (save/remove tracks)
 - Get user's listening history and top content
+- Retrieve song lyrics with synchronized timestamps
 
 ## ✨ Key Features
 
-### 🛠️ **28 Comprehensive Tools** across 7 categories:
+### 🛠️ **29 Comprehensive Tools** across 7 categories:
 
 - **Albums** (4 tools): Album information and new releases
 - **Artists** (6 tools): Artist data, top tracks, and discovery
-- **Tracks** (7 tools): Track details and library management
+- **Tracks** (8 tools): Track details, lyrics, and library management
 - **Playlists** (10 tools): Complete playlist management and discovery
 - **Playback** (10 tools): Full player control and device management
 - **User** (1 tool): User profile information
@@ -99,6 +100,8 @@ Once integrated with Claude Desktop, you can use natural language commands:
 "What's currently playing?"
 "Add this song to my queue"
 "Get my recently played tracks"
+"Show me the lyrics for this song"
+"Get synchronized lyrics for karaoke"
 ```
 
 ## 🏗️ Project Architecture
@@ -115,7 +118,7 @@ src/
 │       ├── index.ts          # Tool registry and registration system
 │       ├── albums.ts         # Album-related tools (4 tools)
 │       ├── artists.ts        # Artist-related tools (6 tools)
-│       ├── tracks.ts         # Track-related tools (7 tools)
+│       ├── tracks.ts         # Track-related tools (8 tools)
 │       ├── playlists.ts      # Playlist management tools (10 tools)
 │       ├── playback.ts       # Playback control tools (10 tools)
 │       ├── user.ts           # User profile tools (1 tool)
@@ -150,7 +153,7 @@ src/
 - `get_followed_artists`: Get user's followed artists
 - `get_top_artists`: Get user's top artists
 
-### Tracks (7 tools)
+### Tracks (8 tools)
 
 - `get_track`: Get detailed track information
 - `search_tracks`: Search for tracks by keywords
@@ -159,6 +162,7 @@ src/
 - `remove_tracks`: Remove tracks from user's library
 - `get_top_tracks`: Get user's top tracks
 - `get_recently_played`: Get recently played tracks
+- `get_track_lyrics`: Get synchronized and plain text lyrics for tracks
 
 ### Playlists (10 tools)
 
