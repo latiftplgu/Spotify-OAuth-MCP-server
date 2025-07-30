@@ -390,7 +390,8 @@ export const trackTools = {
 📝 WHAT IT RETURNS:
 • Structured response with success status and error handling
 • Complete track information (name, artist, album, duration)
-• Plain text lyrics in clean, readable format
+• Formatted lyrics with proper verse separation and spacing
+• Clean, readable format with organized line breaks
 • Instrumental track detection for non-vocal content
 • Fallback message when lyrics are unavailable
 
@@ -401,11 +402,12 @@ export const trackTools = {
 • "Display the song lyrics for analysis"
 
 🎵 RESPONSE FORMAT:
-• Success response includes track metadata and lyrics string
-• Plain text lyrics with line breaks for easy reading
+• Success response includes track metadata and formatted lyrics
+• Lyrics organized in verses with proper spacing between sections
+• Clean line breaks and trimmed text for optimal readability
 • Error responses provide helpful fallback information
 • Instrumental flag indicates tracks without vocals
-• Clean format perfect for display and analysis
+• Perfect verse-by-verse format for display and analysis
 
 💡 LYRIC FEATURES:
 • Clean plain text format without timestamps
@@ -448,6 +450,17 @@ export const trackTools = {
 
         const data = await response.json();
 
+        let formattedLyrics = "Lyrics not available for this track";
+
+        if (data.plainLyrics) {
+          formattedLyrics = data.plainLyrics
+            .split("\n")
+            .map((line) => line.trim())
+            .filter((line) => line.length > 0)
+            .join("\n")
+            .replace(/\n\n+/g, "\n\n");
+        }
+
         return {
           success: true,
           track: {
@@ -456,7 +469,7 @@ export const trackTools = {
             album: data.albumName || track.album?.name,
             duration: data.duration || Math.floor(track.duration_ms / 1000),
           },
-          lyrics: data.plainLyrics || "Lyrics not available for this track",
+          lyrics: formattedLyrics,
           instrumental: data.instrumental || false,
         };
       } catch (error) {
