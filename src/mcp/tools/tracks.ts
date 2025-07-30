@@ -378,36 +378,98 @@ export const trackTools = {
 
   get_track_lyrics: {
     title: "Get Track Lyrics",
-    description: `Retrieve the lyrics for a specific track, providing the complete text of the song with synchronized timestamps for each line.
+    description: `Retrieve comprehensive lyrics information for any Spotify track with both plain text and synchronized timestamps.
 
 🎯 USE CASES:
-• Analyze song lyrics for music analysis or research
-• Create lyric-based playlists or playlists
+• Analyze song lyrics for music analysis, research, or content creation
+• Build karaoke applications with synchronized lyric display
+• Create lyric-based search and discovery features
+• Develop music education tools with lyric analysis
+• Build sing-along features for music applications
 
 📝 WHAT IT RETURNS:
-• Complete lyrics for the specified track
-• Synchronized timestamps for each line of lyrics
-• Lyrics in plain text format for easy reading
-• Lyrics in synchronized format for karaoke or lyric display
-• Lyrics in different languages if available
+• Structured response with success status and error handling
+• Complete track information (name, artist, album, duration)
+• Plain text lyrics for reading and analysis
+• Synchronized lyrics with precise timestamps for each line
+• Instrumental track detection for non-vocal content
+• Fallback information when lyrics are unavailable
 
 🔍 EXAMPLES:
 • "Show me the lyrics for 'Bohemian Rhapsody' by Queen"
-• "Get the lyrics for this specific song"
-• "What are the lyrics to 'Shape of You' by Ed Sheeran?"
+• "Get synchronized lyrics for karaoke display"
+• "What are the lyrics to track ID: 4uLU6hMCjMI75M1A2tKUQC?"
+• "Analyze the lyrics of this specific song"
+
+🎵 RESPONSE FORMAT:
+• Success response includes track metadata and lyrics object
+• Plain lyrics for general reading and text analysis
+• Synced lyrics with [mm:ss.ss] timestamps for karaoke
+• Error responses provide helpful fallback information
+• Instrumental flag indicates tracks without vocals
+
+💡 LYRIC FEATURES:
+• Professional-grade synchronized timestamps
+• Cross-platform compatibility for lyric display
+• Error handling for unavailable or missing lyrics
+• UTF-8 support for international character sets
+• Perfect for building music applications with lyric features
 
 ⚠️ REQUIREMENTS:
 • Valid Spotify access token
 • Track must exist and be available in user's market
-• Lyrics must be available for the track
-• Lyrics must be available for the track`,
+• Uses external lyrics service for comprehensive coverage
+• Returns structured data even when lyrics unavailable`,
     schema: createSchema({
       token: commonSchemas.token(),
       trackId: commonSchemas.spotifyId("track"),
     }),
     handler: async (args: any, spotifyService: SpotifyService) => {
       const { token, trackId } = args;
-      return await spotifyService.getTrackLyrics(token, trackId);
+
+      try {
+        const track = await spotifyService.getTrack(token, trackId);
+        const response = await fetch(
+          `https://lrclib.net/api/get?artist_name=${encodeURIComponent(
+            track.artists[0].name
+          )}&track_name=${encodeURIComponent(track.name)}`
+        );
+
+        if (!response.ok) {
+          return {
+            success: false,
+            message: "Lyrics not found for this track",
+            track: {
+              name: track.name,
+              artist: track.artists[0].name,
+              album: track.album?.name,
+            },
+          };
+        }
+
+        const data = await response.json();
+
+        return {
+          success: true,
+          track: {
+            name: data.trackName || track.name,
+            artist: data.artistName || track.artists[0].name,
+            album: data.albumName || track.album?.name,
+            duration: data.duration || Math.floor(track.duration_ms / 1000),
+          },
+          lyrics: {
+            plain: data.plainLyrics,
+            synced: data.syncedLyrics,
+            instrumental: data.instrumental || false,
+          },
+        };
+      } catch (error) {
+        return {
+          success: false,
+          message: "Error fetching lyrics",
+          error: error instanceof Error ? error.message : "Unknown error",
+        };
+      }
     },
   },
 };
