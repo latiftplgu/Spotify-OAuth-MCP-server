@@ -12,7 +12,7 @@ This MCP server acts as a bridge between AI assistants and Spotify's Web API, al
 - Access user profiles and music libraries
 - Manage user's music library (save/remove tracks)
 - Get user's listening history and top content
-- Retrieve song lyrics with synchronized timestamps
+- Retrieve plain text song lyrics
 
 ## ✨ Key Features
 
@@ -101,7 +101,7 @@ Once integrated with Claude Desktop, you can use natural language commands:
 "Add this song to my queue"
 "Get my recently played tracks"
 "Show me the lyrics for this song"
-"Get synchronized lyrics for karaoke"
+"Get the plain text lyrics for analysis"
 ```
 
 ## 🏗️ Project Architecture
@@ -162,7 +162,7 @@ src/
 - `remove_tracks`: Remove tracks from user's library
 - `get_top_tracks`: Get user's top tracks
 - `get_recently_played`: Get recently played tracks
-- `get_track_lyrics`: Get synchronized and plain text lyrics for tracks
+- `get_track_lyrics`: Get plain text lyrics for tracks
 
 ### Playlists (10 tools)
 

@@ -378,48 +378,47 @@ export const trackTools = {
 
   get_track_lyrics: {
     title: "Get Track Lyrics",
-    description: `Retrieve comprehensive lyrics information for any Spotify track with both plain text and synchronized timestamps.
+    description: `Retrieve plain text lyrics for any Spotify track in a clean, readable format.
 
 🎯 USE CASES:
 • Analyze song lyrics for music analysis, research, or content creation
-• Build karaoke applications with synchronized lyric display
+• Display lyrics in music applications for reading along
 • Create lyric-based search and discovery features
 • Develop music education tools with lyric analysis
-• Build sing-along features for music applications
+• Build lyrics display features for music players
 
 📝 WHAT IT RETURNS:
 • Structured response with success status and error handling
 • Complete track information (name, artist, album, duration)
-• Plain text lyrics for reading and analysis
-• Synchronized lyrics with precise timestamps for each line
+• Plain text lyrics in clean, readable format
 • Instrumental track detection for non-vocal content
-• Fallback information when lyrics are unavailable
+• Fallback message when lyrics are unavailable
 
 🔍 EXAMPLES:
 • "Show me the lyrics for 'Bohemian Rhapsody' by Queen"
-• "Get synchronized lyrics for karaoke display"
+• "Get the lyrics for this track"
 • "What are the lyrics to track ID: 4uLU6hMCjMI75M1A2tKUQC?"
-• "Analyze the lyrics of this specific song"
+• "Display the song lyrics for analysis"
 
 🎵 RESPONSE FORMAT:
-• Success response includes track metadata and lyrics object
-• Plain lyrics for general reading and text analysis
-• Synced lyrics with [mm:ss.ss] timestamps for karaoke
+• Success response includes track metadata and lyrics string
+• Plain text lyrics with line breaks for easy reading
 • Error responses provide helpful fallback information
 • Instrumental flag indicates tracks without vocals
+• Clean format perfect for display and analysis
 
 💡 LYRIC FEATURES:
-• Professional-grade synchronized timestamps
-• Cross-platform compatibility for lyric display
+• Clean plain text format without timestamps
+• Easy to read and analyze lyrics content
 • Error handling for unavailable or missing lyrics
 • UTF-8 support for international character sets
-• Perfect for building music applications with lyric features
+• Perfect for lyrics display and text analysis
 
 ⚠️ REQUIREMENTS:
 • Valid Spotify access token
 • Track must exist and be available in user's market
 • Uses external lyrics service for comprehensive coverage
-• Returns structured data even when lyrics unavailable`,
+• Returns clean plain text lyrics only`,
     schema: createSchema({
       token: commonSchemas.token(),
       trackId: commonSchemas.spotifyId("track"),
@@ -457,11 +456,8 @@ export const trackTools = {
             album: data.albumName || track.album?.name,
             duration: data.duration || Math.floor(track.duration_ms / 1000),
           },
-          lyrics: {
-            plain: data.plainLyrics,
-            synced: data.syncedLyrics,
-            instrumental: data.instrumental || false,
-          },
+          lyrics: data.plainLyrics || "Lyrics not available for this track",
+          instrumental: data.instrumental || false,
         };
       } catch (error) {
         return {
