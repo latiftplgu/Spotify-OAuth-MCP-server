@@ -422,18 +422,17 @@ export const trackTools = {
 
 🔍 EXAMPLE RESPONSE FORMAT:
 
-Verse 1:
-line 1
-line 2
-line 3
-
-Chorus:
-line 1
-line 2
-
-Verse 2:
-line 1
-line 2
+{
+  "success": true,
+  "track": {
+    "name": "Bohemian Rhapsody",
+    "artist": "Queen",
+    "album": "A Night at the Opera",
+    "duration": 354
+  },
+  "lyrics": "Verse 1:\nIs this the real life?\nIs this just fantasy?\nCaught in a landslide,\nNo escape from reality.\n\nChorus:\nMama, just killed a man\nPut a gun against his head\nPulled my trigger, now he's dead\n\nVerse 2:\nToo late, my time has come\nSends shivers down my spine\nBody's aching all the time",
+  "instrumental": false
+}
 
 
 `,
