@@ -753,4 +753,14 @@ export class SpotifyService {
       "DELETE"
     );
   }
+
+  async getTrackLyrics(token: string, trackId: string): Promise<string> {
+    const track = await this.getTrack(token, trackId);
+    const lyrics = await this.makeRequest<string>(
+      `https://lrclib.net/api/lyrics/${track.artists[0].name}/${track.name}`,
+      token,
+      {}
+    );
+    return lyrics;
+  }
 }

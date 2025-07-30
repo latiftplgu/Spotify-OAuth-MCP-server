@@ -375,4 +375,39 @@ export const trackTools = {
       return await spotifyService.getRecentlyPlayed(token, limit);
     },
   },
+
+  get_track_lyrics: {
+    title: "Get Track Lyrics",
+    description: `Retrieve the lyrics for a specific track, providing the complete text of the song with synchronized timestamps for each line.
+
+🎯 USE CASES:
+• Analyze song lyrics for music analysis or research
+• Create lyric-based playlists or playlists
+
+📝 WHAT IT RETURNS:
+• Complete lyrics for the specified track
+• Synchronized timestamps for each line of lyrics
+• Lyrics in plain text format for easy reading
+• Lyrics in synchronized format for karaoke or lyric display
+• Lyrics in different languages if available
+
+🔍 EXAMPLES:
+• "Show me the lyrics for 'Bohemian Rhapsody' by Queen"
+• "Get the lyrics for this specific song"
+• "What are the lyrics to 'Shape of You' by Ed Sheeran?"
+
+⚠️ REQUIREMENTS:
+• Valid Spotify access token
+• Track must exist and be available in user's market
+• Lyrics must be available for the track
+• Lyrics must be available for the track`,
+    schema: createSchema({
+      token: commonSchemas.token(),
+      trackId: commonSchemas.spotifyId("track"),
+    }),
+    handler: async (args: any, spotifyService: SpotifyService) => {
+      const { token, trackId } = args;
+      return await spotifyService.getTrackLyrics(token, trackId);
+    },
+  },
 };
