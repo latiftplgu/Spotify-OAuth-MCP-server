@@ -2,6 +2,10 @@
 
 A comprehensive **Model Context Protocol (MCP)** server that provides seamless integration between AI assistants (like Claude Desktop) and the Spotify Web API. This server enables AI assistants to interact with Spotify's music streaming service through a well-structured, type-safe interface.
 
+<a href="https://glama.ai/mcp/servers/@latiftplgu/Spotify-OAuth-MCP-server">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@latiftplgu/Spotify-OAuth-MCP-server/badge" alt="Spotify Server MCP server" />
+</a>
+
 ## 🎵 Overview
 
 This MCP server acts as a bridge between AI assistants and Spotify's Web API, allowing users to:
